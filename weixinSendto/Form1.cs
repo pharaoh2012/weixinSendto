@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
@@ -36,6 +37,7 @@ namespace weixinSendto
 
         public Form1()
         {
+            weixinSendto.Weixin.initTmp(Properties.Settings.Default.pointCount.Split(',').Select(x => Convert.ToInt32(x)).ToArray());
             InitializeComponent();
         }
 
@@ -64,14 +66,31 @@ namespace weixinSendto
         {
 
             const int WM_HOTKEY = 0x0312;
-            if (m.Msg == WM_HOTKEY)
+            if (m.Msg == WM_HOTKEY && m.WParam.ToInt32() == HOTKEY_ID)
             {
-                if (m.WParam.ToInt32() == HOTKEY_ID)
-                {
-                    Winxin.SendTo();
-                }
+                //// 触发异步操作，不阻塞 UI
+                //_ = Task.Run(async () =>
+                //{
+                //    try
+                //    {
+                DoWeixin();
+                //}
+                //catch (Exception ex)
+                //{
+                //    // 记录日志或通知用户
+                //    Debug.WriteLine($"热键发送失败: {ex}");
+                //}
+                //});
             }
             base.WndProc(ref m);
+        }
+
+        private async void DoWeixin()
+        {
+            notifyIcon1.ShowBalloonTip(1000, "", "开始执行@" + DateTime.Now.ToShortTimeString(), ToolTipIcon.None);
+            var ret = await Weixin.SendTo();
+            if (ret == null) notifyIcon1.ShowBalloonTip(5000, "✔✔✔", "发送成功@" + DateTime.Now.ToShortTimeString(), ToolTipIcon.None);
+            else notifyIcon1.ShowBalloonTip(10000, "❌❌❌", ret + "@" + DateTime.Now.ToShortTimeString(), ToolTipIcon.Error);
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
