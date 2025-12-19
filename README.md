@@ -7,3 +7,8 @@
 * 点击`发送`按钮
 
 快捷键： `Win+Shift+A`
+
+## 开发环境
+
+* Visual Studio 2026
+* .NET Framework 4.8
