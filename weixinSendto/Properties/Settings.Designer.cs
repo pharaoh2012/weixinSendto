@@ -32,15 +32,21 @@ namespace weixinSendto.Properties {
             }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("5,6,14,15,10,11,9,9,9,14,14,9")]
         public string pointCount {
             get {
                 return ((string)(this["pointCount"]));
             }
-            set {
-                this["pointCount"] = value;
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("temp")]
+        public string key {
+            get {
+                return ((string)(this["key"]));
             }
         }
     }

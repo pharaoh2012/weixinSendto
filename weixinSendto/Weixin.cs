@@ -24,11 +24,11 @@ namespace weixinSendto
 
         public static async Task<string> SendTo()
         {
-            Log.Write("Weixin SendTo Start");
+            // Log.Write("Weixin SendTo Start");
             // 1. 获取当前鼠标位置
             Point cursorPos = Cursor.Position;
 
-            await WindowsInput.Simulate.Events().Release(KeyCode.LWin).Release(KeyCode.A).Invoke();
+            await WindowsInput.Simulate.Events().Release(KeyCode.LWin).Release(KeyCode.LShift).Release(KeyCode.A).Invoke();
             // .Release(KeyCode.LShift)
 
             await WindowsInput.Simulate.Events().MoveTo(cursorPos.X, cursorPos.Y).Click(ButtonCode.Right).Invoke();
@@ -37,11 +37,11 @@ namespace weixinSendto
             Rectangle rect = new Rectangle(cursorPos.X + 5, cursorPos.Y + 5, 80, 200);
 
             Thread.Sleep(500);
-            Log.Write("Weixin SendTo CaptureScreen");
+            // Log.Write("Weixin SendTo CaptureScreen");
             // 2. 截取屏幕区域
             Bitmap screenshot = CaptureScreen(rect);
 
-            Log.Write("Weixin SendTo BinarizeAndCountBlackPixels");
+            // Log.Write("Weixin SendTo BinarizeAndCountBlackPixels");
             // 3. 二值化并统计每行黑点数量
             int[] blackPixelCounts = BinarizeAndCountBlackPixels(screenshot);
 
@@ -54,7 +54,7 @@ namespace weixinSendto
                 await WindowsInput.Simulate.Events().MoveTo(cursorPos.X + 5 + 40, cursorPos.Y + 5 + index + 5).Click(ButtonCode.Left).Invoke();
                 // MouseClicker.Click(cursorPos.X + 5 + 40, cursorPos.Y + 5 + index + 5);
                 Thread.Sleep(1000);
-                await WindowsInput.Simulate.Events().Click("temp").Click(KeyCode.Return).Wait(500).Invoke();
+                await WindowsInput.Simulate.Events().Click(Properties.Settings.Default.key).Click(KeyCode.Return).Wait(500).Invoke();
                 //SendKeys.Send("temp");
                 //SendKeys.Send("{ENTER}"); // 模拟回车键
                 //Thread.Sleep(500);
@@ -62,7 +62,7 @@ namespace weixinSendto
                 if (pt != null)
                 {
                     await WindowsInput.Simulate.Events().MoveTo(pt.Value.X + 140, pt.Value.Y + 125).Click(ButtonCode.Left).Wait(500)
-                        .MoveTo(pt.Value.X + 420, pt.Value.Y + 520).Click(ButtonCode.Left).Wait(500)
+                        .MoveTo(pt.Value.X + 420, pt.Value.Y + 520).Click(ButtonCode.Left).Wait(500).MoveTo(cursorPos.X, cursorPos.Y)
 
                         .Invoke();
                     //MouseClicker.Click(pt.Value.X + 140, pt.Value.Y + 125); // 选择temp联系人
