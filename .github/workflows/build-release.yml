@@ -22,7 +22,7 @@ jobs:
       uses: microsoft/setup-msbuild@v2
     
     - name: Restore NuGet packages
-      run: msbuild -t:Restore weixinSendto.slnx
+      run: nuget restore weixinSendto\packages.config -PackagesDirectory packages
     
     - name: Build Release
       run: msbuild -p:Configuration=Release weixinSendto.slnx
