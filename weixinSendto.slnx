@@ -1,3 +1,9 @@
 <Solution>
-  <Project Path="weixinSendto/weixinSendto.csproj" Id="97cd5ca9-5fb1-4dd5-a0c5-20937cc6b831" />
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Project Path="weixinSendto/weixinSendto.csproj" Id="97cd5ca9-5fb1-4dd5-a0c5-20937cc6b831">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
 </Solution>

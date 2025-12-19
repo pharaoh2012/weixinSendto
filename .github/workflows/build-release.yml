@@ -22,10 +22,10 @@ jobs:
       uses: microsoft/setup-msbuild@v2
     
     - name: Restore NuGet packages
-      run: msbuild -t:Restore
+      run: msbuild -t:Restore weixinSendto.slnx
     
     - name: Build Release
-      run: msbuild -p:Configuration=Release
+      run: msbuild -p:Configuration=Release weixinSendto.slnx
     
     - name: Determine Tag Name
       id: get_tag
