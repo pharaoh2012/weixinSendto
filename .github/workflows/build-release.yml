@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Version tag to release (e.g., v1.0.0)'
+        required: true
+        default: 'v1.0.0'
 
 jobs:
   build:
@@ -21,11 +27,30 @@ jobs:
     - name: Build Release
       run: msbuild -p:Configuration=Release
     
+    - name: Determine Tag Name
+      id: get_tag
+      run: |
+        if ($env:GITHUB_EVENT_NAME -eq 'workflow_dispatch') {
+          echo "::set-output name=tag::${{ github.event.inputs.tag_name }}"
+        } else {
+          echo "::set-output name=tag::${{ github.ref_name }}"
+        }
+      shell: pwsh
+    
+    - name: Create Tag (if manual trigger)
+      if: github.event_name == 'workflow_dispatch'
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git tag ${{ steps.get_tag.outputs.tag }}
+        git push origin ${{ steps.get_tag.outputs.tag }}
+    
     - name: Create Release
       id: create_release
       uses: softprops/action-gh-release@v2
       with:
-        name: Release ${{ github.ref_name }}
+        tag_name: ${{ steps.get_tag.outputs.tag }}
+        name: Release ${{ steps.get_tag.outputs.tag }}
         draft: false
         prerelease: false
         generate_release_notes: true
