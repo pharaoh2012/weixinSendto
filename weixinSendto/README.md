@@ -43,7 +43,7 @@
 2. 调整 `dx`、`dy`、`imgWidth`、`imgHeight` 确保截图区域覆盖右键菜单
 3. 调整 `search_x`、`search_y` 使其对准转发窗口中搜索结果的第一个匹配项
 4. 调整 `sendbtn_x`、`sendbtn_y` 使其对准转发窗口的发送按钮
-5. 如需适配新的菜单样式，可通过截图分析更新 `pointCount` 像素特征
+5. 如需适配新的菜单样式，菜单截图为：`screenshot.png`，每行黑点数量查看 `log`目录下的最新log文件。
 
 ## 开发环境
 

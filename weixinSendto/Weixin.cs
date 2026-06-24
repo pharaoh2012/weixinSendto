@@ -33,8 +33,13 @@ namespace weixinSendto
 
             await WindowsInput.Simulate.Events().MoveTo(cursorPos.X, cursorPos.Y).Click(ButtonCode.Right).Invoke();
 
+            var dx = Properties.Settings.Default.dx;
+            var dy = Properties.Settings.Default.dy;
+            var imgWidth = Properties.Settings.Default.imgWidth;
+            var imgHeight = Properties.Settings.Default.imgHeight;
+
             // MouseClicker.RightClick(cursorPos.X, cursorPos.Y);
-            Rectangle rect = new Rectangle(cursorPos.X + 5, cursorPos.Y + 5, 80, 200);
+            Rectangle rect = new Rectangle(cursorPos.X + dx, cursorPos.Y + dy, imgWidth, imgHeight);
 
             Thread.Sleep(500);
             // Log.Write("Weixin SendTo CaptureScreen");
@@ -45,39 +50,52 @@ namespace weixinSendto
             // 3. 二值化并统计每行黑点数量
             int[] blackPixelCounts = BinarizeAndCountBlackPixels(screenshot);
 
-            screenshot.Dispose();
-
-            int index = find(blackPixelCounts);
-            if (index != -1)
+            try
             {
-                Console.WriteLine("找到:" + index);
-                await WindowsInput.Simulate.Events().MoveTo(cursorPos.X + 5 + 40, cursorPos.Y + 5 + index + 5).Click(ButtonCode.Left).Invoke();
-                // MouseClicker.Click(cursorPos.X + 5 + 40, cursorPos.Y + 5 + index + 5);
-                Thread.Sleep(1000);
-                await WindowsInput.Simulate.Events().Click(Properties.Settings.Default.key).Click(KeyCode.Return).Wait(500).Invoke();
-                //SendKeys.Send("temp");
-                //SendKeys.Send("{ENTER}"); // 模拟回车键
-                //Thread.Sleep(500);
-                var pt = WindowHelper.GetCurrentWindowLeftTop();
-                if (pt != null)
+                int index = find(blackPixelCounts);
+                if (index != -1)
                 {
-                    await WindowsInput.Simulate.Events().MoveTo(pt.Value.X + 140, pt.Value.Y + 125).Click(ButtonCode.Left).Wait(500)
-                        .MoveTo(pt.Value.X + 420, pt.Value.Y + 520).Click(ButtonCode.Left).Wait(500).MoveTo(cursorPos.X, cursorPos.Y)
-
-                        .Invoke();
-                    //MouseClicker.Click(pt.Value.X + 140, pt.Value.Y + 125); // 选择temp联系人
+                    Console.WriteLine("找到:" + index);
+                    await WindowsInput.Simulate.Events().MoveTo(cursorPos.X + dx + imgWidth / 2, cursorPos.Y + dy + index + 5).Click(ButtonCode.Left).Invoke();
+                    // MouseClicker.Click(cursorPos.X + 5 + 40, cursorPos.Y + 5 + index + 5);
+                    Thread.Sleep(1000);
+                    await WindowsInput.Simulate.Events().Click(Properties.Settings.Default.key).Click(KeyCode.Return).Wait(500).Invoke();
+                    //SendKeys.Send("temp");
+                    //SendKeys.Send("{ENTER}"); // 模拟回车键
                     //Thread.Sleep(500);
-                    //MouseClicker.Click(pt.Value.X + 420, pt.Value.Y + 520); // 点击确定
-                }
-                return null;
-            }
-            else
-            {
-                Log.Write("未找到匹配项:" + string.Join(",", blackPixelCounts));
-                Console.WriteLine("未找到匹配项");
-                return "未找到匹配项";
-            }
+                    var pt = WindowHelper.GetCurrentWindowLeftTop();
+                    if (pt != null)
+                    {
+                        await WindowsInput.Simulate.Events()
+                            .MoveTo(pt.Value.X + Properties.Settings.Default.search_x, pt.Value.Y + Properties.Settings.Default.search_y) // 移动到搜索的第一个结果
+                            .Click(ButtonCode.Left).Wait(500)
+                            .MoveTo(pt.Value.X + Properties.Settings.Default.sendbtn_x, pt.Value.Y + Properties.Settings.Default.sendbtn_y) // 移动到发送按钮位置
+                            .Click(ButtonCode.Left).Wait(500).MoveTo(cursorPos.X, cursorPos.Y)
 
+                            .Invoke();
+                        //MouseClicker.Click(pt.Value.X + 140, pt.Value.Y + 125); // 选择temp联系人
+                        //Thread.Sleep(500);
+                        //MouseClicker.Click(pt.Value.X + 420, pt.Value.Y + 520); // 点击确定
+                    }
+                    return null;
+                }
+                else
+                {
+                    Log.Write("未找到匹配项:" + string.Join(",", blackPixelCounts));
+                    Console.WriteLine("未找到匹配项");
+                    screenshot.Save("screenshot.png", ImageFormat.Png);
+                    return "未找到匹配项";
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex.Message);
+                return ex.Message;
+            }
+            finally
+            {
+                screenshot.Dispose();
+            }
         }
 
         private static int find(int[] arr)
@@ -119,7 +137,7 @@ namespace weixinSendto
             {
                 g.CopyFromScreen(bounds.Location, Point.Empty, bounds.Size);
             }
-            bitmap.Save("screenshot.png", ImageFormat.Png);
+            // bitmap.Save("screenshot.png", ImageFormat.Png);
             return bitmap;
         }
 
