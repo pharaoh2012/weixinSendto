@@ -61,7 +61,7 @@ namespace weixinSendto.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("105")]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
         public int dy {
             get {
                 return ((int)(this["dy"]));
@@ -79,7 +79,7 @@ namespace weixinSendto.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("200")]
+        [global::System.Configuration.DefaultSettingValueAttribute("300")]
         public int imgHeight {
             get {
                 return ((int)(this["imgHeight"]));
