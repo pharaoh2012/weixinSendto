@@ -39,6 +39,7 @@ namespace weixinSendto
         {
             weixinSendto.Weixin.initTmp(Properties.Settings.Default.pointCount.Split(',').Select(x => Convert.ToInt32(x)).ToArray());
             InitializeComponent();
+            notifyIcon1.BalloonTipClicked += (s, e) => Process.Start(AppDomain.CurrentDomain.BaseDirectory);
         }
 
 
