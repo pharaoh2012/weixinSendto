@@ -6,10 +6,12 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WindowsInput.Events;
+using WindowsInput.Native;
 
 namespace weixinSendto
 {
@@ -81,9 +83,11 @@ namespace weixinSendto
                 }
                 else
                 {
-                    Log.Write("未找到匹配项:" + string.Join(",", blackPixelCounts));
+                    var ptText = string.Join(",", blackPixelCounts);
+                    string result = Regex.Replace(ptText, @"(0,){3,}", "\n");
+                    Log.Write("未找到匹配项:" + result);
                     Console.WriteLine("未找到匹配项");
-                    screenshot.Save("screenshot.png", ImageFormat.Png);
+                    screenshot.Save("log\\screenshot.png", ImageFormat.Png);
                     return "未找到匹配项";
                 }
             }
